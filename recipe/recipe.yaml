@@ -30,7 +30,7 @@ outputs:
         - pip
         - python ${{ python_min }}.*
         - setuptools_scm
-        - setuptools
+        - setuptools >=61.0
       run:
         - python >=${{ python_min }}
       run_constraints:
