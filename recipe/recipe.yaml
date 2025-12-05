@@ -4,7 +4,7 @@ schema_version: 1
 
 context:
   version: "28.1.0"
-  sqlglotrs_version: 0.7.3
+  sqlglotrs_version: "0.8.0"
   PYTHON: $PYTHON
 
 recipe:
