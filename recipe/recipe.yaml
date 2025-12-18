@@ -3,7 +3,7 @@
 schema_version: 1
 
 context:
-  version: "28.3.0"
+  version: "28.4.0"
   sqlglotrs_version: "0.9.0"
   PYTHON: $PYTHON
 
@@ -13,7 +13,7 @@ recipe:
 
 source:
   url: https://pypi.org/packages/source/s/sqlglot/sqlglot-${{ version }}.tar.gz
-  sha256: 9425c239792d1ee2efdad9ccafc5d6138d2c9b03a55ff653ba99a4afeba71ccb
+  sha256: 3ef93112e50a4427fbec2265a461595ee084a2fa80587d3b98be01d6a3699dfe
 
 build:
   number: 0
