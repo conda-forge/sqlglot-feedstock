@@ -7,3 +7,5 @@ conda_build:
   pkg_format: '2'
 bot:
   inspection: hint-all
+provider:
+  osx_arm64: azure
