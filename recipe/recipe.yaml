@@ -23,16 +23,15 @@ recipe:
   name: sqlglot
   version: ${{ version }}
 
-source:
-  url: https://pypi.org/packages/source/s/sqlglot/sqlglot-${{ version }}.tar.gz
-  sha256: 6b8369704662d4f654bc934cea4dd31c916c2a571b389210cb9e951a275e5fd9
-
 build:
   number: 0
 
 outputs:
   - package:
       name: sqlglot
+    source:
+      url: https://pypi.org/packages/source/s/sqlglot/sqlglot-${{ version }}.tar.gz
+      sha256: 6b8369704662d4f654bc934cea4dd31c916c2a571b389210cb9e951a275e5fd9
     build:
       noarch: python
       script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check
