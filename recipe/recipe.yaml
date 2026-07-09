@@ -1,10 +1,8 @@
-# from `sqlglotrs/Cargo.toml#package/version`
 # handle undefined PYTHON in `noarch: generic` outputs
 schema_version: 1
 
 context:
   version: "30.12.0"
-  sqlglotrs_version: "0.12.0"
   PYTHON: $PYTHON
 
 recipe:
@@ -33,8 +31,6 @@ outputs:
         - setuptools >=61.0
       run:
         - python >=${{ python_min }}
-      run_constraints:
-        - sqlglotrs ==${{ sqlglotrs_version }}
     tests:
       - python:
           imports:
@@ -56,40 +52,6 @@ outputs:
             - python ${{ python_min }}.*
         script:
           - pytest -vvv --capture=tee-sys --color=yes --tb=long tests
-  - package:
-      name: sqlglot-rs
-    build:
-      noarch: generic
-    requirements:
-      run:
-        - ${{ pin_subpackage('sqlglot', exact=True) }}
-        - sqlglotrs
-    tests:
-      - python:
-          imports:
-            - sqlglot
-          pip_check: true
-          python_version: ${{ python_min }}.*
-      - files:
-          recipe:
-            - test_sqlglotrs_version.py
-          source:
-            - tests/
-            - sqlglotrs/Cargo.toml
-        requirements:
-          run:
-            - openjdk
-            - pandas
-            - pip
-            - pyspark
-            - pytest
-            - python-dateutil
-            - python-duckdb >=0.6
-            - tomli
-            - python ${{ python_min }}.*
-        script:
-          - pytest -vvv --capture=tee-sys --color=yes --tb=long test_sqlglotrs_version.py
-          - pytest -vvv --capture=tee-sys --color=yes --tb=long -k "not test_token_repr" tests
 
 about:
   summary: An easily customizable SQL parser and transpiler
