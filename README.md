@@ -1,7 +1,58 @@
-About sqlglot-feedstock
-=======================
+About sqlglot-mypy-feedstock
+============================
 
 Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/sqlglot-feedstock/blob/main/LICENSE.txt)
+
+
+About sqlglot-mypy
+------------------
+
+Home: https://github.com/vaggelisd/sqlglot-mypy
+
+Package license: MIT
+
+Summary: Private mypyc-capable mypy build, used only to compile sqlglotc
+
+Development: https://github.com/vaggelisd/sqlglot-mypy
+
+Documentation: https://mypy.readthedocs.io/en/stable/index.html
+
+sqlglot-mypy is tobymao/sqlglot's fork of mypy (same import names,
+same CLI entry points), published under a separate PyPI name so the
+mypyc toolchain used to compile the sqlglotc accelerator can move
+independently of upstream mypy's release cadence. It is packaged
+here solely to satisfy sqlglotc's `mypyc.build.mypycify` build-time
+dependency in this recipe. It is not intended to be installed in a
+general-purpose environment: it installs files under the same
+`mypy`/`mypyc` import names as the regular conda-forge `mypy`
+package and will conflict with it if both are requested together.
+
+About sqlglotc
+--------------
+
+Home: https://sqlglot.com/
+
+Package license: MIT
+
+Summary: mypyc-compiled extensions for sqlglot
+
+Development: https://github.com/tobymao/sqlglot
+
+Documentation: https://sqlglot.com/
+
+sqlglotc ships mypyc-compiled native extensions for sqlglot, the SQL
+parser and transpiler. Installing it drops compiled `.so`/`.pyd`
+modules directly into the already-installed `sqlglot` package's
+directories (tokenizer, parser, generator, optimizer, and every SQL
+dialect's generator/parser), which Python's import machinery prefers
+over the interpreted `.py` sources, giving a significant parsing and
+generation speedup with no code changes required. sqlglotc carries no
+Python API of its own and no functionality beyond the compiled
+modules; each sqlglotc release is pinned to and must be installed
+alongside the exact matching sqlglot release.
+
+About sqlglot
+-------------
 
 Home: https://github.com/tobymao/sqlglot
 
@@ -14,11 +65,113 @@ Current build status
 
 
 <table><tr>
-    <td>All platforms:</td>
+    <td>GitHub Actions</td>
     <td>
       <a href="https://github.com/conda-forge/sqlglot-feedstock/actions/workflows/conda-build.yml">
         <img src="https://github.com/conda-forge/sqlglot-feedstock/actions/workflows/conda-build.yml/badge.svg?event=push&branch=main">
       </a>
+    </td>
+  </tr>
+    
+  <tr>
+    <td>Azure</td>
+    <td>
+      <details>
+        <summary>
+          <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=13745&branchName=main">
+            <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/sqlglot-feedstock?branchName=main">
+          </a>
+        </summary>
+        <table>
+          <thead><tr><th>Variant</th><th>Status</th></tr></thead>
+          <tbody><tr>
+              <td>osx_64_python3.10.____cpython</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=13745&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/sqlglot-feedstock?branchName=main&jobName=osx&configuration=osx%20osx_64_python3.10.____cpython" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
+              <td>osx_64_python3.11.____cpython</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=13745&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/sqlglot-feedstock?branchName=main&jobName=osx&configuration=osx%20osx_64_python3.11.____cpython" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
+              <td>osx_64_python3.12.____cpython</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=13745&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/sqlglot-feedstock?branchName=main&jobName=osx&configuration=osx%20osx_64_python3.12.____cpython" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
+              <td>osx_64_python3.13.____cp313</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=13745&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/sqlglot-feedstock?branchName=main&jobName=osx&configuration=osx%20osx_64_python3.13.____cp313" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
+              <td>osx_arm64_python3.10.____cpython</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=13745&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/sqlglot-feedstock?branchName=main&jobName=osx&configuration=osx%20osx_arm64_python3.10.____cpython" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
+              <td>osx_arm64_python3.11.____cpython</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=13745&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/sqlglot-feedstock?branchName=main&jobName=osx&configuration=osx%20osx_arm64_python3.11.____cpython" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
+              <td>osx_arm64_python3.12.____cpython</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=13745&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/sqlglot-feedstock?branchName=main&jobName=osx&configuration=osx%20osx_arm64_python3.12.____cpython" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
+              <td>osx_arm64_python3.13.____cp313</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=13745&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/sqlglot-feedstock?branchName=main&jobName=osx&configuration=osx%20osx_arm64_python3.13.____cp313" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
+              <td>win_64_python3.10.____cpython</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=13745&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/sqlglot-feedstock?branchName=main&jobName=win&configuration=win%20win_64_python3.10.____cpython" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
+              <td>win_64_python3.11.____cpython</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=13745&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/sqlglot-feedstock?branchName=main&jobName=win&configuration=win%20win_64_python3.11.____cpython" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
+              <td>win_64_python3.12.____cpython</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=13745&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/sqlglot-feedstock?branchName=main&jobName=win&configuration=win%20win_64_python3.12.____cpython" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
+              <td>win_64_python3.13.____cp313</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=13745&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/sqlglot-feedstock?branchName=main&jobName=win&configuration=win%20win_64_python3.13.____cp313" alt="variant">
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </details>
     </td>
   </tr>
 </table>
@@ -29,28 +182,29 @@ Current release info
 | Name | Downloads | Version | Platforms |
 | --- | --- | --- | --- |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-sqlglot-green.svg)](https://anaconda.org/conda-forge/sqlglot) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/sqlglot.svg)](https://anaconda.org/conda-forge/sqlglot) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/sqlglot.svg)](https://anaconda.org/conda-forge/sqlglot) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/sqlglot.svg)](https://anaconda.org/conda-forge/sqlglot) |
-| [![Conda Recipe](https://img.shields.io/badge/recipe-sqlglot--rs-green.svg)](https://anaconda.org/conda-forge/sqlglot-rs) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/sqlglot-rs.svg)](https://anaconda.org/conda-forge/sqlglot-rs) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/sqlglot-rs.svg)](https://anaconda.org/conda-forge/sqlglot-rs) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/sqlglot-rs.svg)](https://anaconda.org/conda-forge/sqlglot-rs) |
+| [![Conda Recipe](https://img.shields.io/badge/recipe-sqlglot--mypy-green.svg)](https://anaconda.org/conda-forge/sqlglot-mypy) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/sqlglot-mypy.svg)](https://anaconda.org/conda-forge/sqlglot-mypy) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/sqlglot-mypy.svg)](https://anaconda.org/conda-forge/sqlglot-mypy) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/sqlglot-mypy.svg)](https://anaconda.org/conda-forge/sqlglot-mypy) |
+| [![Conda Recipe](https://img.shields.io/badge/recipe-sqlglotc-green.svg)](https://anaconda.org/conda-forge/sqlglotc) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/sqlglotc.svg)](https://anaconda.org/conda-forge/sqlglotc) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/sqlglotc.svg)](https://anaconda.org/conda-forge/sqlglotc) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/sqlglotc.svg)](https://anaconda.org/conda-forge/sqlglotc) |
 
-Installing sqlglot
-==================
+Installing sqlglot-mypy
+=======================
 
-Installing `sqlglot` from the `conda-forge` channel can be achieved by adding `conda-forge` to your channels with:
+Installing `sqlglot-mypy` from the `conda-forge` channel can be achieved by adding `conda-forge` to your channels with:
 
 ```
 conda config --add channels conda-forge
 conda config --set channel_priority strict
 ```
 
-Once the `conda-forge` channel has been enabled, `sqlglot, sqlglot-rs` can be installed with `conda`:
+Once the `conda-forge` channel has been enabled, `sqlglot, sqlglot-mypy, sqlglotc` can be installed with `conda`:
 
 ```
-conda install sqlglot sqlglot-rs
+conda install sqlglot sqlglot-mypy sqlglotc
 ```
 
 or with `mamba`:
 
 ```
-mamba install sqlglot sqlglot-rs
+mamba install sqlglot sqlglot-mypy sqlglotc
 ```
 
 It is possible to list all of the versions of `sqlglot` available on your platform with `conda`:
@@ -120,17 +274,17 @@ Terminology
                   produce the finished article (built conda distributions)
 
 
-Updating sqlglot-feedstock
-==========================
+Updating sqlglot-mypy-feedstock
+===============================
 
-If you would like to improve the sqlglot recipe or build a new
+If you would like to improve the sqlglot-mypy recipe or build a new
 package version, please fork this repository and submit a PR. Upon submission,
 your changes will be run on the appropriate platforms to give the reviewer an
 opportunity to confirm that the changes result in a successful build. Once
 merged, the recipe will be re-built and uploaded automatically to the
 `conda-forge` channel, whereupon the built conda packages will be available for
 everybody to install and use from the `conda-forge` channel.
-Note that all branches in the conda-forge/sqlglot-feedstock are
+Note that all branches in the conda-forge/sqlglot-mypy-feedstock are
 immediately built and any created packages are uploaded, so PRs should be based
 on branches in forks, and branches in the main repository should only be used to
 build distinct package versions.
@@ -145,6 +299,7 @@ In order to produce a uniquely identifiable distribution:
 Feedstock Maintainers
 =====================
 
+* [@pb01ka](https://github.com/pb01ka/)
 * [@thewchan](https://github.com/thewchan/)
 * [@tobymao](https://github.com/tobymao/)
 
