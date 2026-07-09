@@ -4,6 +4,20 @@ schema_version: 1
 context:
   version: "30.12.0"
   PYTHON: $PYTHON
+  # sqlglotc is compiled with a private mypy fork (same PyPI description/import
+  # names as stock mypy) published by upstream to build sqlglotc independently
+  # of the upstream mypy release cadence; it is not on conda-forge, so we build
+  # it here as a second output and use it only as sqlglotc's host build tool.
+  sqlglot_mypy_version: "2.1.0.post3"
+  ast_serialize_min: "0.3.0"
+  ast_serialize_max: "1.0.0"
+  mypy_extensions_min: "1.0.0"
+  pathspec_min: "1.0.0"
+  pathspec_max: "1.1"
+  python_librt_min: "0.11.0"
+  tomli_min: "1.1.0"
+  typing_extensions_min: "4.6.0"
+  py_bin: ${{ "so" if unix else "pyd" }}
 
 recipe:
   name: sqlglot
@@ -53,6 +67,145 @@ outputs:
         script:
           - pytest -vvv --capture=tee-sys --color=yes --tb=long tests
 
+  - package:
+      name: sqlglot-mypy
+      version: ${{ sqlglot_mypy_version }}
+    source:
+      - url: https://pypi.org/packages/source/s/sqlglot-mypy/sqlglot_mypy-${{ sqlglot_mypy_version }}.tar.gz
+        sha256: 5574c67006fb259e05e5367a5537b756d02a34df959adc2883c49a5203a1ade4
+    build:
+      number: 0
+      script:
+        env:
+          MYPY_USE_MYPYC: "1"
+        content:
+          - ${{ PYTHON }} -m pip install . --no-deps -vv --no-build-isolation --disable-pip-version-check
+    requirements:
+      build:
+        - ${{ compiler("c") }}
+        - ${{ stdlib("c") }}
+      host:
+        - ast-serialize >=${{ ast_serialize_min }},<${{ ast_serialize_max }}
+        - mypy_extensions >=${{ mypy_extensions_min }}
+        - pathspec >=${{ pathspec_min }},<${{ pathspec_max }}
+        - pip
+        - python
+        - python-librt >=${{ python_librt_min }}
+        - setuptools >=77.0.3
+        - types-psutil
+        - types-setuptools
+        - typing_extensions >=${{ typing_extensions_min }}
+        - if: match(python, "<3.11")
+          then:
+            - tomli >=${{ tomli_min }}
+      run:
+        - ast-serialize >=${{ ast_serialize_min }},<${{ ast_serialize_max }}
+        - mypy_extensions >=${{ mypy_extensions_min }}
+        - pathspec >=${{ pathspec_min }},<${{ pathspec_max }}
+        - python
+        - python-librt >=${{ python_librt_min }}
+        - typing_extensions >=${{ typing_extensions_min }}
+        - if: match(python, "<3.11")
+          then:
+            - tomli >=${{ tomli_min }}
+    tests:
+      - python:
+          imports:
+            - mypy
+            - mypyc
+            - mypyc.build
+          pip_check: true
+    about:
+      summary: Private mypyc-capable mypy build, used only to compile sqlglotc
+      description: |
+        sqlglot-mypy is tobymao/sqlglot's fork of mypy (same import names,
+        same CLI entry points), published under a separate PyPI name so the
+        mypyc toolchain used to compile the sqlglotc accelerator can move
+        independently of upstream mypy's release cadence. It is packaged
+        here solely to satisfy sqlglotc's `mypyc.build.mypycify` build-time
+        dependency in this recipe. It is not intended to be installed in a
+        general-purpose environment: it installs files under the same
+        `mypy`/`mypyc` import names as the regular conda-forge `mypy`
+        package and will conflict with it if both are requested together.
+      license: MIT
+      license_file:
+        - LICENSE
+        - mypy/typeshed/LICENSE
+      homepage: https://github.com/vaggelisd/sqlglot-mypy
+      repository: https://github.com/vaggelisd/sqlglot-mypy
+      documentation: https://mypy.readthedocs.io/en/stable/index.html
+
+  - package:
+      name: sqlglotc
+      version: ${{ version }}
+    source:
+      - url: https://pypi.org/packages/source/s/sqlglotc/sqlglotc-${{ version }}.tar.gz
+        sha256: 7c4c9c7d76026b75f64a6682faf84cf5145e3304190c07807b86962d8d535f74
+      # sqlglotc's sdist ships no LICENSE file; pull the matching tag's from
+      # the tobymao/sqlglot monorepo the sqlglotc/ subdirectory is cut from.
+      - url: https://raw.githubusercontent.com/tobymao/sqlglot/v${{ version }}/LICENSE
+        file_name: LICENSE
+        sha256: b0bf909b472ddf9bd4eab30f6e6fd8b33bf3997ce038b882fe0663f291958d2d
+    build:
+      number: 0
+      skip: match(python, "<3.10")
+      script:
+        - ${{ PYTHON }} -m pip install . --no-deps -vv --no-build-isolation --disable-pip-version-check
+    requirements:
+      build:
+        - ${{ compiler("c") }}
+        - ${{ stdlib("c") }}
+      host:
+        - pip
+        - python
+        - setuptools >=61.0
+        - setuptools_scm
+        - ${{ pin_subpackage("sqlglot-mypy", exact=True) }}
+        - types-python-dateutil
+        # sqlglotc's pyproject.toml lists sqlglot under [build-system], and
+        # both are cut from the same tobymao/sqlglot tag/version, so pin to
+        # the sqlglot output built in this same recipe rather than a
+        # standalone version constraint.
+        - ${{ pin_subpackage("sqlglot", exact=True) }}
+      run:
+        - python
+        - ${{ pin_subpackage("sqlglot", exact=True) }}
+    tests:
+      - python:
+          imports:
+            - sqlglot
+          pip_check: true
+      - package_contents:
+          site_packages:
+            - sqlglot/parser*.${{ py_bin }}
+            - sqlglot/tokenizer_core*.${{ py_bin }}
+            - sqlglot/expressions/core*.${{ py_bin }}
+      - script:
+          # sqlglotc has no importable API of its own: it drops compiled
+          # modules into sqlglot's own package directory, and CPython's
+          # default import order prefers extension modules over the .py
+          # source of the same name, so this confirms the accelerator
+          # actually got picked up at runtime.
+          - python -c "import sqlglot.parser as p; assert not p.__file__.endswith('.py'), p.__file__"
+    about:
+      summary: mypyc-compiled extensions for sqlglot
+      description: |
+        sqlglotc ships mypyc-compiled native extensions for sqlglot, the SQL
+        parser and transpiler. Installing it drops compiled `.so`/`.pyd`
+        modules directly into the already-installed `sqlglot` package's
+        directories (tokenizer, parser, generator, optimizer, and every SQL
+        dialect's generator/parser), which Python's import machinery prefers
+        over the interpreted `.py` sources, giving a significant parsing and
+        generation speedup with no code changes required. sqlglotc carries no
+        Python API of its own and no functionality beyond the compiled
+        modules; each sqlglotc release is pinned to and must be installed
+        alongside the exact matching sqlglot release.
+      license: MIT
+      license_file: LICENSE
+      homepage: https://sqlglot.com/
+      repository: https://github.com/tobymao/sqlglot
+      documentation: https://sqlglot.com/
+
 about:
   summary: An easily customizable SQL parser and transpiler
   license: MIT
@@ -63,3 +216,4 @@ extra:
   recipe-maintainers:
     - tobymao
     - thewchan
+    - pb01ka
