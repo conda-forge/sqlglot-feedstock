@@ -102,6 +102,13 @@ outputs:
         - pathspec >=${{ pathspec_min }},<${{ pathspec_max }}
         - python
         - python-librt >=${{ python_librt_min }}
+        # mypyc.build (mypyc/build_setup.py) does `from distutils import
+        # ccompiler` at import time; on Python >=3.12, stdlib distutils is
+        # gone, so importing mypyc.build only works if setuptools (which
+        # ships its own vendored distutils and shims `import distutils` to
+        # it) is actually installed alongside this package at runtime, not
+        # just at build time.
+        - setuptools >=77.0.3
         - typing_extensions >=${{ typing_extensions_min }}
         - if: match(python, "<3.11")
           then:
