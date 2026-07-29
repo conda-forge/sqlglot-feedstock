@@ -145,5 +145,6 @@ Feedstock Maintainers
 =====================
 
 * [@thewchan](https://github.com/thewchan/)
+* [@timkpaine](https://github.com/timkpaine/)
 * [@tobymao](https://github.com/tobymao/)
 
