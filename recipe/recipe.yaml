@@ -1,7 +1,7 @@
 schema_version: 1
 
 context:
-  version: "30.14.0"
+  version: "30.15.0"
 
 recipe:
   name: sqlglot
@@ -9,7 +9,7 @@ recipe:
 
 source:
   url: https://pypi.org/packages/source/s/sqlglot/sqlglot-${{ version }}.tar.gz
-  sha256: df2ef5d2b8ca814313781f4ff35bf63e58f821ef517eeddbd523c19a61fa9bb9
+  sha256: fe5412f4da61075f532d3de2482144bf7139028980a37bbd79fb016c49dc2dbe
 
 build:
   number: 0
