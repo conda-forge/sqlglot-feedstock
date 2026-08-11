@@ -16,7 +16,7 @@ recipe:
   version: ${{ version }}
 
 build:
-  number: 0
+  number: 1
 
 outputs:
   - package:
@@ -64,7 +64,7 @@ outputs:
       version: ${{ version }}
     source:
       - url: https://pypi.org/packages/source/s/sqlglotc/sqlglotc-${{ version }}.tar.gz
-        sha256: 7c4c9c7d76026b75f64a6682faf84cf5145e3304190c07807b86962d8d535f74
+        sha256: 16a6ff31db74384b219416f23d9509c9e6f39c7c02d8796ad6a23cbcd40842b7
       # sqlglotc's sdist ships no LICENSE file; pull the matching tag's from
       # the tobymao/sqlglot monorepo the sqlglotc/ subdirectory is cut from.
       - url: https://raw.githubusercontent.com/tobymao/sqlglot/v${{ version }}/LICENSE
