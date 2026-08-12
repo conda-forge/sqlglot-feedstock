@@ -9,3 +9,4 @@ bot:
   inspection: hint-all
 provider:
   osx_arm64: azure
+  win_64: azure
