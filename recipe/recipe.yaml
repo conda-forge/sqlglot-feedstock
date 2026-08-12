@@ -57,7 +57,14 @@ outputs:
             - python-duckdb >=0.6
             - python ${{ python_min }}.*
         script:
-          - pytest -vvv --capture=tee-sys --color=yes --tb=long tests
+          # On Windows, Python's stdout defaults to the console's legacy
+          # codepage rather than UTF-8; pytest's tee/color output then emits
+          # bytes rattler-build's log reader can't decode as UTF-8, aborting
+          # the test step even though every test passed. Force UTF-8 mode.
+          # cmd.exe's `set` does not trim trailing whitespace, so the value
+          # must butt directly up against `&&` or PYTHONUTF8 ends up as "1 "
+          # (with a trailing space), which Python's strict parser rejects.
+          - ${{ "set PYTHONUTF8=1&& set PYTHONIOENCODING=utf-8&& " if win else "" }}pytest -vvv --capture=tee-sys --color=yes --tb=long tests
 
   - package:
       name: sqlglotc
