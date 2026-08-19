@@ -1,23 +1,29 @@
+# handle undefined PYTHON in `noarch: generic` outputs
 schema_version: 1
 
 context:
   version: "30.17.0"
+  PYTHON: $PYTHON
+  # sqlglotc is compiled with a private mypy fork (same PyPI description/import
+  # names as stock mypy) published by upstream to build sqlglotc independently
+  # of the upstream mypy release cadence; it is packaged separately on
+  # conda-forge and used only as sqlglotc's host build tool.
+  sqlglot_mypy_version: "2.1.0.post9"
+  py_bin: ${{ "so" if unix else "pyd" }}
 
 recipe:
   name: sqlglot
   version: ${{ version }}
 
-source:
-  url: https://pypi.org/packages/source/s/sqlglot/sqlglot-${{ version }}.tar.gz
-  sha256: 2d6b8def93304fa300f4d20f48e3909e7f436fda56ca1fafd8975f6c561ef62c
-
 build:
-  number: 0
-  noarch: python
+  number: 1
 
 outputs:
   - package:
       name: sqlglot
+    source:
+      url: https://pypi.org/packages/source/s/sqlglot/sqlglot-${{ version }}.tar.gz
+      sha256: 2d6b8def93304fa300f4d20f48e3909e7f436fda56ca1fafd8975f6c561ef62c
     build:
       noarch: python
       script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check
@@ -51,7 +57,85 @@ outputs:
             - python-duckdb >=0.6
             - python ${{ python_min }}.*
         script:
-          - pytest -vvv --capture=tee-sys --color=yes --tb=long tests
+          # On Windows, Python's stdout defaults to the console's legacy
+          # codepage rather than UTF-8; pytest's tee/color output then emits
+          # bytes rattler-build's log reader can't decode as UTF-8, aborting
+          # the test step even though every test passed. Force UTF-8 mode.
+          # cmd.exe's `set` does not trim trailing whitespace, so the value
+          # must butt directly up against `&&` or PYTHONUTF8 ends up as "1 "
+          # (with a trailing space), which Python's strict parser rejects.
+          - ${{ "set PYTHONUTF8=1&& set PYTHONIOENCODING=utf-8&& " if win else "" }}pytest -vvv --capture=tee-sys --color=yes --tb=long tests
+
+  - package:
+      name: sqlglotc
+      version: ${{ version }}
+    source:
+      - url: https://pypi.org/packages/source/s/sqlglotc/sqlglotc-${{ version }}.tar.gz
+        sha256: 8f83229edbeebb5c02602257a59b596d0c26e63e9827c5dfe9976681e2fb51a7
+      # sqlglotc's sdist ships no LICENSE file; pull the matching tag's from
+      # the tobymao/sqlglot monorepo the sqlglotc/ subdirectory is cut from.
+      - url: https://raw.githubusercontent.com/tobymao/sqlglot/v${{ version }}/LICENSE
+        file_name: LICENSE
+        sha256: b0bf909b472ddf9bd4eab30f6e6fd8b33bf3997ce038b882fe0663f291958d2d
+    build:
+      number: 0
+      script:
+        - ${{ PYTHON }} -m pip install . --no-deps -vv --no-build-isolation --disable-pip-version-check
+    requirements:
+      build:
+        - ${{ compiler("c") }}
+        - ${{ stdlib("c") }}
+      host:
+        - pip
+        - python
+        - setuptools >=61.0
+        - setuptools_scm
+        - sqlglot-mypy ==${{ sqlglot_mypy_version }}
+        - types-python-dateutil
+        # sqlglotc's pyproject.toml lists sqlglot under [build-system], and
+        # both are cut from the same tobymao/sqlglot tag/version, so pin to
+        # the sqlglot output built in this same recipe rather than a
+        # standalone version constraint.
+        - ${{ pin_subpackage("sqlglot", lower_bound='x.x.x', upper_bound='x.x.x') }}
+      run:
+        - python
+        - ${{ pin_subpackage("sqlglot", lower_bound='x.x.x', upper_bound='x.x.x') }}
+    tests:
+      - python:
+          imports:
+            - sqlglot
+          pip_check: true
+      - package_contents:
+          site_packages:
+            - sqlglot/parser*.${{ py_bin }}
+            - sqlglot/tokenizer_core*.${{ py_bin }}
+            - sqlglot/expressions/core*.${{ py_bin }}
+      - script:
+          # sqlglotc has no importable API of its own: it drops compiled
+          # modules into sqlglot's own package directory, and CPython's
+          # default import order prefers extension modules over the .py
+          # source of the same name, so this confirms the accelerator
+          # actually got picked up at runtime.
+          - python -c "import sqlglot.parser as p; assert not p.__file__.endswith('.py'), p.__file__"
+    about:
+      summary: mypyc-compiled extensions for sqlglot
+      description: |
+        sqlglotc ships mypyc-compiled native extensions for sqlglot, the SQL
+        parser and transpiler. Installing it drops compiled `.so`/`.pyd`
+        modules directly into the already-installed `sqlglot` package's
+        directories (tokenizer, parser, generator, optimizer, and every SQL
+        dialect's generator/parser), which Python's import machinery prefers
+        over the interpreted `.py` sources, giving a significant parsing and
+        generation speedup with no code changes required. sqlglotc carries no
+        Python API of its own and no functionality beyond the compiled
+        modules; each sqlglotc release is pinned to and must be installed
+        alongside the exact matching sqlglot release.
+      license: MIT
+      license_file: LICENSE
+      homepage: https://sqlglot.com/
+      repository: https://github.com/tobymao/sqlglot
+      documentation: https://sqlglot.com/
+
 about:
   summary: An easily customizable SQL parser and transpiler
   license: MIT
@@ -63,3 +147,4 @@ extra:
     - timkpaine
     - tobymao
     - thewchan
+    - pb01ka
