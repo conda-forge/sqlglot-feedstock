@@ -2,7 +2,7 @@
 schema_version: 1
 
 context:
-  version: "30.16.0"
+  version: "30.17.0"
   PYTHON: $PYTHON
   # sqlglotc is compiled with a private mypy fork (same PyPI description/import
   # names as stock mypy) published by upstream to build sqlglotc independently
@@ -23,7 +23,7 @@ outputs:
       name: sqlglot
     source:
       url: https://pypi.org/packages/source/s/sqlglot/sqlglot-${{ version }}.tar.gz
-      sha256: 26abd1ef583fbecde24931eb56a5df4a086ba50ba0b36738233da9da16ffea13
+      sha256: 2d6b8def93304fa300f4d20f48e3909e7f436fda56ca1fafd8975f6c561ef62c
     build:
       noarch: python
       script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check
