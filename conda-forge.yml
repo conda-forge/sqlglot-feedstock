@@ -6,7 +6,7 @@ github:
 conda_build:
   pkg_format: '2'
 bot:
-  inspection: hint-all
+  inspection: hint-grayskull
 provider:
   osx_arm64: azure
   win_64: azure

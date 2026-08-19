@@ -79,7 +79,6 @@ outputs:
         sha256: b0bf909b472ddf9bd4eab30f6e6fd8b33bf3997ce038b882fe0663f291958d2d
     build:
       number: 0
-      skip: match(python, "<3.10")
       script:
         - ${{ PYTHON }} -m pip install . --no-deps -vv --no-build-isolation --disable-pip-version-check
     requirements:
