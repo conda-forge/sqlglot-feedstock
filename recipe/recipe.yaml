@@ -56,6 +56,7 @@ outputs:
             - python-dateutil
             - python-duckdb >=0.6
             - python ${{ python_min }}.*
+            - pytz
         script:
           # On Windows, Python's stdout defaults to the console's legacy
           # codepage rather than UTF-8; pytest's tee/color output then emits
