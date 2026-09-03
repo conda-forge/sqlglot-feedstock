@@ -8,7 +8,7 @@ context:
   # names as stock mypy) published by upstream to build sqlglotc independently
   # of the upstream mypy release cadence; it is packaged separately on
   # conda-forge and used only as sqlglotc's host build tool.
-  sqlglot_mypy_version: "2.1.0.post9"
+  sqlglot_mypy_version: "2.3.0.post2"
   py_bin: ${{ "so" if unix else "pyd" }}
 
 recipe:
