@@ -2,13 +2,13 @@
 schema_version: 1
 
 context:
-  version: "30.12.0"
+  version: "30.8.0"
   PYTHON: $PYTHON
   # sqlglotc is compiled with a private mypy fork (same PyPI description/import
   # names as stock mypy) published by upstream to build sqlglotc independently
   # of the upstream mypy release cadence; it is not on conda-forge, so we build
   # it here as a second output and use it only as sqlglotc's host build tool.
-  sqlglot_mypy_version: "2.1.0.post3"
+  sqlglot_mypy_version: "1.20.0.post6"
   ast_serialize_min: "0.3.0"
   ast_serialize_max: "1.0.0"
   mypy_extensions_min: "1.0.0"
@@ -31,7 +31,7 @@ outputs:
       name: sqlglot
     source:
       url: https://pypi.org/packages/source/s/sqlglot/sqlglot-${{ version }}.tar.gz
-      sha256: 6b8369704662d4f654bc934cea4dd31c916c2a571b389210cb9e951a275e5fd9
+      sha256: 1c5f93fb742dd9aaa75eee6bb33a637794a858b9a86375fac23a2dc0f7bc127e
     build:
       noarch: python
       script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check
@@ -70,7 +70,7 @@ outputs:
       version: ${{ sqlglot_mypy_version }}
     source:
       - url: https://pypi.org/packages/source/s/sqlglot-mypy/sqlglot_mypy-${{ sqlglot_mypy_version }}.tar.gz
-        sha256: 5574c67006fb259e05e5367a5537b756d02a34df959adc2883c49a5203a1ade4
+        sha256: a0ef1ce9290d76799be4f6db7e5d7d9f95c214e38d700a911d666bd9881aea0f
     build:
       number: 0
       script:
