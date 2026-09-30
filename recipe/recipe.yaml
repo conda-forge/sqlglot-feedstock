@@ -2,7 +2,7 @@
 schema_version: 1
 
 context:
-  version: "30.20.0"
+  version: "30.21.0"
   PYTHON: $PYTHON
   # sqlglotc is compiled with a private mypy fork (same PyPI description/import
   # names as stock mypy) published by upstream to build sqlglotc independently
@@ -23,7 +23,7 @@ outputs:
       name: sqlglot
     source:
       url: https://pypi.org/packages/source/s/sqlglot/sqlglot-${{ version }}.tar.gz
-      sha256: 8210b49131ac80cb3d4135edd3f64a50c95f2046305f4e6978fca59b39c82407
+      sha256: 6787ac202a3adc0e25434f1512370a655e51cb3de8c792544de5f6ff9c618d25
     build:
       noarch: python
       script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check
@@ -71,8 +71,8 @@ outputs:
       name: sqlglotc
       version: ${{ version }}
     source:
-      - url: https://pypi.org/packages/source/s/sqlglotc/sqlglotc-${{ version }}.tar.gz
-        sha256: b6a3af3ba07c58d106552e2acb025d18afca840babb4a71246189f9fe915e911
+      - url: https://files.pythonhosted.org/packages/11/c0/cd761f018601bf954c9018420eb6707e3675292dfa514cfda44d06aff2ee/sqlglot-${{ version }}.tar.gz
+        sha256: 6787ac202a3adc0e25434f1512370a655e51cb3de8c792544de5f6ff9c618d25
       # sqlglotc's sdist ships no LICENSE file; pull the matching tag's from
       # the tobymao/sqlglot monorepo the sqlglotc/ subdirectory is cut from.
       - url: https://raw.githubusercontent.com/tobymao/sqlglot/v${{ version }}/LICENSE
