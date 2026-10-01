@@ -71,8 +71,8 @@ outputs:
       name: sqlglotc
       version: ${{ version }}
     source:
-      - url: https://files.pythonhosted.org/packages/11/c0/cd761f018601bf954c9018420eb6707e3675292dfa514cfda44d06aff2ee/sqlglot-${{ version }}.tar.gz
-        sha256: 6787ac202a3adc0e25434f1512370a655e51cb3de8c792544de5f6ff9c618d25
+      - url: https://pypi.org/packages/source/s/sqlglotc/sqlglotc-${{ version }}.tar.gz
+        sha256: 7644276e946fa3985d361e9f12b097cb910c4c215ccf73d9caa09e289ef59432
       # sqlglotc's sdist ships no LICENSE file; pull the matching tag's from
       # the tobymao/sqlglot monorepo the sqlglotc/ subdirectory is cut from.
       - url: https://raw.githubusercontent.com/tobymao/sqlglot/v${{ version }}/LICENSE
