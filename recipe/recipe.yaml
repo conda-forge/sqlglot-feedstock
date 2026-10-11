@@ -4,11 +4,6 @@ schema_version: 1
 context:
   version: "30.22.0"
   PYTHON: $PYTHON
-  # sqlglotc is compiled with a private mypy fork (same PyPI description/import
-  # names as stock mypy) published by upstream to build sqlglotc independently
-  # of the upstream mypy release cadence; it is packaged separately on
-  # conda-forge and used only as sqlglotc's host build tool.
-  sqlglot_mypy_version: "2.3.0.post2"
   py_bin: ${{ "so" if unix else "pyd" }}
 
 recipe:
@@ -91,7 +86,7 @@ outputs:
         - python
         - setuptools >=61.0
         - setuptools_scm
-        - sqlglot-mypy ==${{ sqlglot_mypy_version }}
+        - mypy >=2.4.0
         - types-python-dateutil
         # sqlglotc's pyproject.toml lists sqlglot under [build-system], and
         # both are cut from the same tobymao/sqlglot tag/version, so pin to
