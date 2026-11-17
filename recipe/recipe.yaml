@@ -2,7 +2,7 @@
 schema_version: 1
 
 context:
-  version: "30.32.0"
+  version: "30.33.0"
   PYTHON: $PYTHON
   py_bin: ${{ "so" if unix else "pyd" }}
 
@@ -18,7 +18,7 @@ outputs:
       name: sqlglot
     source:
       url: https://pypi.org/packages/source/s/sqlglot/sqlglot-${{ version }}.tar.gz
-      sha256: 9ac4efcd13245e9a2b5909e0d9dd96e1c585cee681b1b4481ae642001839cfc9
+      sha256: 9c007e0471c93e778d8613f25853543b959a3f793d9dadf1341b3d6bd53246a8
     build:
       noarch: python
       script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check
@@ -69,7 +69,7 @@ outputs:
       version: ${{ version }}
     source:
       - url: https://pypi.org/packages/source/s/sqlglotc/sqlglotc-${{ version }}.tar.gz
-        sha256: 0ad76676cd087f9bb18f9a0667db05c7941186b2086bffe2cb2af1650b6ee442
+        sha256: ec4caff771874df1f372141e2980d93d3564993aefe5e1529e2fbd648eed1393
       # sqlglotc's sdist ships no LICENSE file; pull the matching tag's from
       # the tobymao/sqlglot monorepo the sqlglotc/ subdirectory is cut from.
       - url: https://raw.githubusercontent.com/tobymao/sqlglot/v${{ version }}/LICENSE
